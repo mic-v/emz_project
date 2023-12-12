@@ -10,15 +10,21 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float Speed, StrafeSpeed, JumpForce;
     [SerializeField]
-    private Rigidbody Hips;
+    private Rigidbody HipsRB;
+
     [SerializeField]
-    private bool IsGrounded;
+    private Rigidbody LeftFootRB;
+
+    [SerializeField]
+    private Rigidbody RigidFootRB;
 
     private PlayerInputActions PlayerInput;
 
     private InputAction Move;
+    //private InputAction Jump;
 
     Vector2 MoveDir;
+    float JumpDir;
 
     private void Awake()
     {
@@ -26,7 +32,7 @@ public class PlayerController : MonoBehaviour
     }
     void Start()
     {
-        Hips = GetComponent<Rigidbody>();
+        HipsRB = GetComponent<Rigidbody>();
 
 
     }
@@ -35,14 +41,11 @@ public class PlayerController : MonoBehaviour
     {
         Move = PlayerInput.Player.Move;
         Move.Enable();
+
     }
     private void OnDisable()
     {
         Move.Disable();
-    }
-
-    private void MovePlayer()
-    {
     }
 
     private void Update()
@@ -50,17 +53,34 @@ public class PlayerController : MonoBehaviour
         MoveDir = Move.ReadValue<Vector2>();
     }
 
+    public void Jump(InputAction.CallbackContext context) {
+        JumpDir = context.ReadValue<float>();
+    }
+
+
+    private bool IsGrounded()
+    {
+        return GetComponent<Rigidbody>().velocity.y >= 0 && GetComponent<Rigidbody>().velocity.y <= 0.01f;
+    }
+
+    private void ProcessJumping()
+    {
+        if(JumpDir == 1.0f && IsGrounded())
+        {
+            HipsRB.AddForce(HipsRB.transform.up * JumpDir * JumpForce, ForceMode.Force);
+        }
+    }
+
     private void FixedUpdate()
     {
+        Debug.Log(GetComponent<Rigidbody>().velocity.y);
+        HipsRB.AddForce(-HipsRB.transform.forward * MoveDir.y * Speed, ForceMode.Force);
+        HipsRB.AddForce(HipsRB.transform.right * MoveDir.x * StrafeSpeed, ForceMode.Force);
 
-        Hips.AddForce(-Hips.transform.forward * MoveDir.y * Speed, ForceMode.Force);
-        Hips.AddForce(Hips.transform.right * MoveDir.x * StrafeSpeed);
-
+        ProcessJumping();
 
         //Vector3 moveDir3 = MoveDir;
         //Hips.MovePosition(Hips.transform.forward + moveDir3 * Time.deltaTime * Speed);
-
-        Debug.Log(MoveDir.y);
 
     }
 
