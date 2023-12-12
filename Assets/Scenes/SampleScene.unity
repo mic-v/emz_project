@@ -4050,9 +4050,9 @@ MonoBehaviour:
   Speed: 400
   StrafeSpeed: 100
   JumpForce: 5000
-  HipsRB: {fileID: 0}
-  LeftFootRB: {fileID: 0}
-  RigidFootRB: {fileID: 0}
+  HipsRB: {fileID: 1923334015}
+  LeftFootRB: {fileID: 1502083069}
+  RigidFootRB: {fileID: 1281380009}
 --- !u!114 &5465940245818706194
 MonoBehaviour:
   m_ObjectHideFlags: 0
